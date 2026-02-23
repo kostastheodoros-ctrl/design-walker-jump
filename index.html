@@ -3,27 +3,74 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Design Walker — Άνοιγμα</title>
+  <title>Design Walker — Research Index</title>
+  <meta name="description" content="Design Walker — Research Index. Canonical entry to the Design as Event corpus and published work." />
+  <meta name="robots" content="index,follow" />
+  <meta name="referrer" content="no-referrer-when-downgrade" />
 
-  <!-- Fallback: if nothing works, go to target after 6s -->
-  <meta http-equiv="refresh" content="6;url=https://design-walker.blogspot.com/p/design-as-event-index.html" />
+  <!-- Open Graph (preview on social) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Design Walker — Research Index" />
+  <meta property="og:description" content="Canonical entry to the Design as Event corpus and published work." />
+  <meta property="og:url" content="https://kostastheodoros-ctrl.github.io/design-walker-jump/" />
+
+  <!-- Fallback if escape is blocked -->
+  <meta http-equiv="refresh" content="8;url=https://design-walker.blogspot.com/p/design-as-event-index.html" />
 
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;max-width:720px;margin:40px auto;padding:0 16px;line-height:1.35}
-    .btn{display:inline-block;padding:14px 16px;border-radius:12px;border:1px solid #111;text-decoration:none}
-    .muted{opacity:.75}
+    :root { color-scheme: light; }
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      max-width: 900px; margin: 44px auto; padding: 0 18px; line-height: 1.45;
+    }
+    header{ margin-bottom: 18px; }
+    h1{ font-size: 28px; margin: 0 0 6px 0; letter-spacing: .2px; }
+    .sub{ opacity:.8; margin:0; }
+    .card{
+      border:1px solid #111; border-radius: 14px; padding: 16px; margin-top: 18px;
+    }
+    .btn{
+      display:inline-block; padding: 14px 16px; border-radius: 12px;
+      border:1px solid #111; text-decoration:none; font-weight: 600;
+    }
+    .meta{ opacity:.78; font-size: 14px; margin-top: 10px; }
+    .grid{ display:grid; gap: 10px; margin-top: 12px; }
+    .k{ opacity:.7; }
+    a{ color: inherit; }
   </style>
-</head>
-<body>
-  <h1>Άνοιγμα…</h1>
-  <p class="muted">Αν είσαι σε Facebook/Instagram, αυτό βοηθά να ανοίξει εκτός in-app browser.</p>
 
-  <p>
-    <a class="btn" id="openBtn"
-       href="https://design-walker.blogspot.com/p/design-as-event-index.html">
-      Άνοιγμα τώρα
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebPage",
+    "name":"Design Walker — Research Index",
+    "url":"https://kostastheodoros-ctrl.github.io/design-walker-jump/",
+    "description":"Canonical entry to the Design as Event corpus and published work.",
+    "isPartOf":{"@type":"WebSite","name":"Design Walker"},
+    "about":[{"@type":"Thing","name":"Design research"},{"@type":"Thing","name":"Design as Event"}]
+  }
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>Design Walker — Research Index</h1>
+    <p class="sub">Canonical entry point to published work and the <span class="k">Design as Event</span> corpus.</p>
+  </header>
+
+  <section class="card" aria-label="Primary action">
+    <a class="btn" id="openBtn" href="https://design-walker.blogspot.com/p/design-as-event-index.html">
+      Open index
     </a>
-  </p>
+    <div class="meta" id="status">
+      If you are inside a social app, this page attempts to open the index in your browser.
+    </div>
+
+    <div class="grid meta" aria-label="Reference">
+      <div><span class="k">Target:</span> <span id="targetText">design-walker.blogspot.com/p/design-as-event-index.html</span></div>
+      <div><span class="k">Gateway:</span> kostastheodoros-ctrl.github.io/design-walker-jump/</div>
+    </div>
+  </section>
 
   <script>
     (function () {
@@ -32,25 +79,29 @@
       const isAndroid = /Android/i.test(ua);
       const isFBIG = /(FBAN|FBAV|Instagram)/i.test(ua);
 
-      // Android + Facebook/Instagram in-app browser: try Chrome intent escape
+      // Preserve UTM params if present (no cookies; keeps attribution)
+      const qs = location.search || "";
+      const targetWithQS = qs ? (target + qs) : target;
+
+      const status = document.getElementById("status");
+      const openBtn = document.getElementById("openBtn");
+      document.getElementById("targetText").textContent = target.replace(/^https?:\/\//i,"");
+
       if (isAndroid && isFBIG) {
-        const noProto = target.replace(/^https?:\/\//i, "");
+        const noProto = targetWithQS.replace(/^https?:\/\//i, "");
         const intentUrl =
           "intent://" + noProto +
-          "#Intent;scheme=https;package=com.android.chrome;end"; // <-- σωστό (scheme=https;)
+          "#Intent;scheme=https;package=com.android.chrome;end";
 
-        // Attempt immediately; if blocked, user taps button
+        // Try immediate escape; if blocked, user taps the button once.
         try { location.href = intentUrl; } catch (e) {}
-        document.getElementById("openBtn").href = intentUrl;
+        openBtn.href = intentUrl;
+        status.textContent = "Android detected inside social app: attempting Chrome browser open.";
       } else {
-        // iOS / desktop / other: normal link
-        document.getElementById("openBtn").href = target;
+        openBtn.href = targetWithQS;
+        status.textContent = "Tap once to open the index. (On iOS, apps restrict automatic browser handoff.)";
       }
     })();
   </script>
-
-  <p class="muted">
-    Αν δεν ανοίξει, πάτησε το κουμπί. Εναλλακτικά: ⋮ → «Άνοιγμα σε πρόγραμμα περιήγησης».
-  </p>
 </body>
 </html>
