@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Design Walker — Άνοιγμα</title>
+
+  <!-- Fallback: if nothing works, go to target after 6s -->
+  <meta http-equiv="refresh" content="6;url=https://design-walker.blogspot.com/p/design-as-event-index.html" />
+
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;max-width:720px;margin:40px auto;padding:0 16px;line-height:1.35}
+    .btn{display:inline-block;padding:14px 16px;border-radius:12px;border:1px solid #111;text-decoration:none}
+    .muted{opacity:.75}
+  </style>
+</head>
+<body>
+  <h1>Άνοιγμα…</h1>
+  <p class="muted">Αν είσαι σε Facebook/Instagram, αυτό βοηθά να ανοίξει εκτός in-app browser.</p>
+
+  <p>
+    <a class="btn" id="openBtn"
+       href="https://design-walker.blogspot.com/p/design-as-event-index.html">
+      Άνοιγμα τώρα
+    </a>
+  </p>
+
+  <script>
+    (function () {
+      const target = "https://design-walker.blogspot.com/p/design-as-event-index.html";
+      const ua = navigator.userAgent || "";
+      const isAndroid = /Android/i.test(ua);
+      const isFBIG = /(FBAN|FBAV|Instagram)/i.test(ua);
+
+      // Android + Facebook/Instagram in-app browser: try Chrome intent escape
+      if (isAndroid && isFBIG) {
+        const noProto = target.replace(/^https?:\/\//i, "");
+        const intentUrl =
+          "intent://" + noProto +
+          "#Intent;scheme=https;package=com.android.chrome;end"; // <-- σωστό (scheme=https;)
+
+        // Attempt immediately; if blocked, user taps button
+        try { location.href = intentUrl; } catch (e) {}
+        document.getElementById("openBtn").href = intentUrl;
+      } else {
+        // iOS / desktop / other: normal link
+        document.getElementById("openBtn").href = target;
+      }
+    })();
+  </script>
+
+  <p class="muted">
+    Αν δεν ανοίξει, πάτησε το κουμπί. Εναλλακτικά: ⋮ → «Άνοιγμα σε πρόγραμμα περιήγησης».
+  </p>
+</body>
+</html>
